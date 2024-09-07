@@ -1,8 +1,10 @@
+let qrCode;
+
 function generateQRCode() {
     const linkInput = document.getElementById('linkInput').value;
     const qrcodeDiv = document.getElementById('qrcode');
 
-    // Clear previous QR code if any
+    // Hapus QR Code sebelumnya jika ada
     qrcodeDiv.innerHTML = '';
 
     if (linkInput.trim() === '') {
@@ -10,23 +12,36 @@ function generateQRCode() {
         return;
     }
 
-    // Generate QR code
-    const qrCode = new QRCode(qrcodeDiv, {
-        text: linkInput,
-        width: 200,
-        height: 200,
+    // Inisialisasi QR Code Styling
+    qrCode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        data: linkInput,
+        image: "", // Jika ingin menambahkan logo di tengah QR Code
+        dotsOptions: {
+            color: "#4267b2", // Warna dots
+            type: "rounded"  // Bentuk dots (rounded, dots, etc.)
+        },
+        backgroundOptions: {
+            color: "#ffffff"  // Background QR Code
+        },
+        cornersSquareOptions: {
+            color: "#4267b2", // Warna kotak sudut QR
+            type: "extra-rounded"
+        },
+        cornersDotOptions: {
+            color: "#4267b2", // Warna titik di sudut
+            type: "square"
+        }
     });
 
-    // Show download button
+    // Render QR Code ke dalam div
+    qrCode.append(qrcodeDiv);
+
+    // Tampilkan tombol download
     document.getElementById('downloadBtn').style.display = 'inline-block';
 }
 
 function downloadQRCode() {
-    const qrCanvas = document.querySelector('#qrcode canvas');
-    const image = qrCanvas.toDataURL("image/png");
-
-    const link = document.createElement('a');
-    link.href = image;
-    link.download = 'qrcode.png';
-    link.click();
+    qrCode.download({ name: "qrcode", extension: "png" });
 }
